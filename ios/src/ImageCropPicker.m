@@ -125,7 +125,19 @@ RCT_EXPORT_MODULE();
 }
 
 - (UIViewController*) getRootVC {
-    UIViewController *root = [[[[UIApplication sharedApplication] delegate] window] rootViewController];
+    NSArray *allWindows = [[UIApplication sharedApplication] windows];
+    UIWindow *topWindow = nil;
+    CGFloat highestWindowLevel = -CGFLOAT_MAX;
+
+    for (UIWindow *window in allWindows) {
+        if (window.windowLevel > highestWindowLevel) {
+            topWindow = window;
+            highestWindowLevel = window.windowLevel;
+        }
+    }
+    
+    UIViewController *root = topWindow.rootViewController;
+    
     while (root.presentedViewController != nil) {
         root = root.presentedViewController;
     }
